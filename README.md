@@ -409,6 +409,79 @@ We can upgrade our `QuantitativeBot` class by adding a method that dynamically c
 
 By substituting our static `self.risk_pct` with this dynamic `calculate_kelly_fraction` method, the bot now possesses self-awareness regarding its own performance.
 
+
+
 ---
 
+## 8. High-Frequency Upgrades: WebSocket Integration
+
+Polling a REST API every 60 seconds using `fetch_ohlcv()` is sufficient for educational purposes or low-frequency swing trading. However, in a live market, structural breakdowns or anomalies can happen in milliseconds. To compete at a professional level, your bot needs to react instantly.
+
+To achieve this, we must transition from REST API polling to **WebSockets**. A WebSocket establishes a continuous, persistent connection to the exchange, allowing the exchange server to push new price data to your bot the exact millisecond a trade occurs.
+
+### Asynchronous Python with CCXT Pro
+
+Upgrading to WebSockets requires asynchronous programming (`async/await` patterns). The standard `ccxt` library provides a `.pro` module designed precisely for asynchronous WebSocket streams.
+
+Here is how you can restructure the data ingestion engine to run asynchronously:
+
+```python
+import ccxt.pro as ccxtpro
+import asyncio
+import logging
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+
+class AsyncQuantitativeBot:
+    def __init__(self, symbol='BTC/USDT', timeframe='1m'):
+        self.symbol = symbol
+        self.timeframe = timeframe
+        
+        # Initialize the asynchronous PRO version of the exchange
+        self.exchange = ccxtpro.okx({'enableRateLimit': True})
+        self.exchange.set_sandbox_mode(True)
+            
+    async def watch_market_data(self):
+        """Continuously streams real-time candlestick data without polling."""
+        logging.info(f"Connecting to WebSocket stream for {self.symbol}...")
+        
+        while True:
+            try:
+                # The loop pauses here until the exchange pushes a live update
+                ohlcv = await self.exchange.watch_ohlcv(self.symbol, self.timeframe)
+                
+                # ohlcv structure: [timestamp, open, high, low, close, volume]
+                latest_candle = ohlcv[0] 
+                current_price = latest_candle[4]
+                
+                logging.info(f"Real-time update received: {current_price} USDT")
+                
+                # Here you would inject the Pandas DataFrame, Z-Score, 
+                # and Kelly Criterion execution logic.
+                
+            except Exception as e:
+                logging.error(f"WebSocket connection error: {e}. Reconnecting...")
+                await asyncio.sleep(5) # Brief pause before attempting reconnection
+
+    async def run(self):
+        try:
+            await self.watch_market_data()
+        finally:
+            # Gracefully close the connection when the bot stops
+            await self.exchange.close()
+
+if __name__ == "__main__":
+    bot = AsyncQuantitativeBot()
+    # Execute the asynchronous event loop
+    asyncio.run(bot.run())
+
+```
+
+### Conclusion
+
+By combining the Object-Oriented state management from Section 4, the mathematical optimization of the Kelly Criterion from Section 7, and the asynchronous low-latency WebSocket streams from Section 8, you have successfully transitioned a basic python script into a sophisticated, institutional-grade algorithmic trading architecture.
+
+The baseline is complete. Now, it is up to you to find your Alpha.
+
+---
 
