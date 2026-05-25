@@ -1,7 +1,7 @@
 
 
 
-# 📈 Statistical Trading with Python: Build an Advanced Mean Reversion Bot
+#  Statistical Trading with Python: Build an Advanced Mean Reversion Bot
 
 ## 1. Introduction: Escaping the "Get Rich Quick" Illusion
 
