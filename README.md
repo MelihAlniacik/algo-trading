@@ -358,4 +358,57 @@ This architecture provides a solid foundation, but a production-ready algorithm 
 2. **Backtesting:** Before running this on a live testnet, test the logic against 5 years of historical data using a framework like `Backtrader`.
 3. **The Kelly Criterion:** Upgrade the static 2% risk rule to calculate dynamic position sizing based on the system's historical win rate and risk/reward ratio using the Kelly formula.
 
-*Disclaimer: This repository is for educational purposes only. Do not trade with real capital using unverified algorithms. The market is unforgiving.*
+---
+
+## 7. Advanced Position Sizing: Implementing the Kelly Criterion
+
+In Section 5, we established a static 2% risk rule to prevent catastrophic drawdown. While effective for survival, static risk sizing is mathematically inefficient for maximizing long-term compound growth.
+
+If your algorithm is performing exceptionally well in current market conditions, risking only 2% leaves money on the table. Conversely, if market behavior changes and your win rate drops, continuing to risk 2% will drain your account unnecessarily.
+
+To solve this, quantitative funds use the **Kelly Criterion**. Developed by John Kelly at Bell Labs, this formula dictates the mathematically optimal fraction of your bankroll to risk on a single trade based on your system's historical performance.
+
+### The Kelly Formula
+
+$$K = W - \frac{1 - W}{R}$$
+
+Where:
+
+* $K$ = The optimal percentage of your capital to risk (The Kelly Fraction).
+* $W$ = The Win Rate of your algorithm (e.g., 0.55 for 55%).
+* $R$ = The Risk/Reward Ratio (Average Profit per winning trade / Average Loss per losing trade).
+
+### Python Implementation
+
+We can upgrade our `QuantitativeBot` class by adding a method that dynamically calculates the Kelly Fraction before executing a trade. If the algorithm starts performing poorly, the Kelly formula will automatically reduce the position size, mathematically defending your capital.
+
+```python
+    def calculate_kelly_fraction(self, historical_win_rate, average_profit, average_loss):
+        """
+        Dynamically calculates the optimal risk percentage using the Kelly Criterion.
+        """
+        if average_loss == 0:
+            return 0.0 # Prevent division by zero
+            
+        reward_risk_ratio = average_profit / abs(average_loss)
+        
+        kelly_pct = historical_win_rate - ((1 - historical_win_rate) / reward_risk_ratio)
+        
+        # Safety mechanisms
+        if kelly_pct <= 0:
+            logging.warning("Kelly Criterion suggests 0 risk. System edge lost. Pausing trades.")
+            return 0.0
+            
+        # Half-Kelly for risk aversion (Standard industry practice)
+        half_kelly = kelly_pct / 2.0
+        
+        # Hard cap at 5% absolute maximum risk per trade
+        return min(half_kelly, 0.05)
+
+```
+
+By substituting our static `self.risk_pct` with this dynamic `calculate_kelly_fraction` method, the bot now possesses self-awareness regarding its own performance.
+
+---
+
+
