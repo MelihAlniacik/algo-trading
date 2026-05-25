@@ -3,6 +3,8 @@
 
 #  Statistical Trading with Python: Build an Advanced Mean Reversion Bot
 
+DISCLAIMER: STRICTLY FOR EDUCATIONAL PURPOSES. This repository and the accompanying code are provided for educational, research, and informational purposes only. This is not financial advice. Algorithmic trading involves extreme risk. Do not use this code to trade with real capital.
+
 ## 1. Introduction: Escaping the "Get Rich Quick" Illusion
 
 The internet is flooded with "make money while you sleep" promises regarding algorithmic trading. However, the reality of quantitative finance is a ruthless battlefield. When you deploy a trading bot, you aren't just trading against the market; you are competing against institutional funds, high-frequency algorithms, and hyper-optimized infrastructure.
@@ -485,3 +487,15 @@ The baseline is complete. Now, it is up to you to find your Alpha.
 
 ---
 
+9. Legal & Risk Disclaimer
+1. Not Financial Advice:
+The information, code, algorithms, and strategies presented in this repository do not constitute financial advice, investment advice, trading advice, or any other sort of advice. You should not treat any of the repository's content as such. Conduct your own due diligence and consult your financial advisor before making any investment decisions.
+
+2. High Risk of Ruin:
+Algorithmic trading, especially in cryptocurrency markets, carries a high level of risk and may not be suitable for all investors. The degree of leverage can work against you as well as for you. Before deciding to trade, you should carefully consider your investment objectives, level of experience, and risk appetite. There is a possibility that you could sustain a loss of some or all of your initial investment.
+
+3. "As-Is" Software Clause:
+This code is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose, and non-infringement. In no event shall the authors, contributors, or copyright holders be liable for any claim, damages, or other liability, whether in an action of contract, tort, or otherwise, arising from, out of, or in connection with the software or the use or other dealings in the software.
+
+4. API Security:
+The user is solely responsible for the security of their exchange API keys. Never commit your API keys, Secret keys, or passwords to a public repository. Always use secure environment variables (.env files) to manage sensitive credentials. The author assumes no responsibility for compromised accounts, unauthorized trades, or financial losses resulting from the misuse of this software.
